@@ -1,6 +1,16 @@
 from flask import request, jsonify
 from app import app
 from models import db, Project, BlogPost, Contact
+from flask import Blueprint, request, jsonify
+from models import db, Project
+
+
+bp = Blueprint('routes', __name__)
+
+@bp.route('/projects', methods=['GET'])
+def get_projects():
+    projects = Project.query.all()
+    return jsonify([project.to_dict() for project in projects])
 
 
 @app.route('/projects', methods=['POST'])
@@ -28,10 +38,7 @@ def delete_project(id):
     db.session.commit()
     return jsonify({"MESSAGE": "PROJECT DELETED SUCCESSFULLY"})
 
-@app.route('/projects', methods=['GET'])
-def get_all_projects():
-    projects = Project.query.all()
-    return jsonify([project.to_dict() for project in projects])
+
 
 @app.route('/projects/<int:id>', methods=['GET'])
 def get_single_project(id):
